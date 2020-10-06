@@ -108,3 +108,120 @@ instacart %>%
 		values_from = mean_hour
 	)
 ```
+#Problem 2
+```{r laod and tidy}
+accel_data = 
+  read_csv(file = "./data/accel_data.csv") %>% 
+  pivot_longer(
+    activity.1:activity.1440,
+    names_to = "minute",
+    names_prefix = "activity.",
+    values_to = "activity"
+  ) %>% 
+  mutate(
+    minute = as.numeric(minute),
+    day_1 = day, 
+    day_1 = recode(day, "Monday" = "1" ,"Tuesday" =  "2", "Wednesday" = "3", "Thursday" = "4", "Friday" = "5", "Saturday" = "6", "Sunday" = "7"),
+    weekday_type = ifelse(day_1 > 5, "weekend", "weekday"),
+    day = factor(day, order = TRUE, levels = c("Monday","Tuesday","Wednesday", "Thursday" , "Friday", "Saturday","Sunday"))
+  ) %>% 
+  arrange(day) %>% 
+  select(-day_1)
+
+accel_data
+```
+
+There is `r nrow(accel_data)` rows and `r ncol(accel_data)` columns in this dataset. 
+The variables contains :
+*week: from 1 to 5
+*day_id: from 1 to 35
+*day: Monday to Sunday
+*weekday_type:(weekday or weekend):
+*minute(the minute of the day):
+*activity: the activity counts for each minute
+
+There is `r nrow(accel_data)` observation.
+
+********
+Create a readable table showing total activity for each day.
+```{r}
+total_activity_a_day = 
+  accel_data %>% 
+  group_by(week,day) %>% 
+  summarize(
+    total_each_day = sum(activity)
+  )
+
+
+table_for_total = 
+  total_activity_a_day %>% 
+  pivot_wider(
+    names_from = "day",
+    values_from = "total_each_day"
+  )
+
+knitr::kable(table_for_total, digits = 2)
+
+```
+
+
+The trends are not apparent.
+
+**********
+
+Draw a plot to see the trends.
+```{r}
+trends = 
+  total_activity_a_day %>% 
+  ungroup(week,day) %>% 
+  mutate(day_number = row_number()) %>% 
+  ggplot(aes(x = day_number, y = total_each_day, color = week)) + 
+  geom_point() + 
+  geom_line() + 
+   scale_y_continuous(
+    breaks = c(100000,200000,300000,400000), 
+    labels = c("100000","200000","300000","400000")
+    ) + 
+  labs(
+    x = "Day",
+    y = "Total activity",
+    caption = "Data from the Advanced Cardiac Care Center of Columbia University Medical Center"
+  )
+  
+trends
+
+```
+
+Now we could see the trends of total activity for each day.
+
+********
+
+Draw a single-panel plot that shows the 24-hour activity time courses for each day.
+```{r}
+accel_data %>% 
+  group_by(day) %>% 
+  mutate(hour_in_a_day = ceiling(minute/60)) %>%
+  group_by(day, hour_in_a_day) %>% 
+  summarize(sum_by_hour = sum(activity)) %>% 
+  ggplot(aes(x = hour_in_a_day, y = sum_by_hour, color = day)) + 
+  geom_point(aes(group = day)) + 
+  geom_line(aes(group = day)) + 
+  scale_y_continuous(
+    breaks = c(100000,200000,300000,400000), 
+    labels = c("100000","200000","300000","400000")
+    ) + 
+  scale_x_continuous(
+    breaks = c(0,3,6,9,12,15,18,21,24), 
+    labels = c("0", "3", "6", "9", "12","15","18","21","24")
+    ) + 
+  labs(
+    x = "Hour of each day",
+    y = "Activity",
+    caption = "Data from the Advanced Cardiac Care Center of Columbia University Medical Center"
+  )
+```
+
+We could see that this man's activity counts was high in 9pm on Friday and was inactive during 0am to 8am everyday.
+
+
+
