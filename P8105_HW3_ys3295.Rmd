@@ -109,6 +109,7 @@ instacart %>%
 	)
 ```
 #Problem 2
+
 ```{r laod and tidy}
 accel_data = 
   read_csv(file = "./data/accel_data.csv") %>% 
