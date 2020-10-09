@@ -8,12 +8,14 @@ output: github_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(hexbin)
+library(patchwork)
 library(p8105.datasets)
 
 knitr::opts_chunk$set(
 	fig.width = 6, 
   fig.asp = .6,
-  out.width = "90%"
+  out.width = "80%"
 )
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
@@ -65,6 +67,7 @@ instacart %>%
 	arrange(desc(n))
 ```
 
+********
 
 Let's make a plot
 
@@ -81,6 +84,7 @@ instacart %>%
 	theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
+********
 
 Let's make a table!!
 
@@ -95,6 +99,7 @@ instacart %>%
 	knitr::kable()
 ```
 
+********
 
 Apples vs ice cream..
 
@@ -108,8 +113,8 @@ instacart %>%
 		values_from = mean_hour
 	)
 ```
-#Problem 2
-
+### Problem 2
+ 
 ```{r laod and tidy}
 accel_data = 
   read_csv(file = "./data/accel_data.csv") %>% 
@@ -128,8 +133,6 @@ accel_data =
   ) %>% 
   arrange(day) %>% 
   select(-day_1)
-
-accel_data
 ```
 
 There is `r nrow(accel_data)` rows and `r ncol(accel_data)` columns in this dataset. 
@@ -144,6 +147,7 @@ The variables contains :
 There is `r nrow(accel_data)` observation.
 
 ********
+
 Create a readable table showing total activity for each day.
 ```{r}
 total_activity_a_day = 
@@ -172,24 +176,21 @@ The trends are not apparent.
 
 Draw a plot to see the trends.
 ```{r}
-trends = 
-  total_activity_a_day %>% 
+total_activity_a_day %>% 
   ungroup(week,day) %>% 
   mutate(day_number = row_number()) %>% 
   ggplot(aes(x = day_number, y = total_each_day, color = week)) + 
   geom_point() + 
   geom_line() + 
-   scale_y_continuous(
-    breaks = c(100000,200000,300000,400000), 
-    labels = c("100000","200000","300000","400000")
+  scale_y_continuous(
+  breaks = c(100000,200000,300000,400000,500000,600000,700000,800000), 
+  labels = c("100000","200000","300000","400000","500000","600000","700000", "800000")
     ) + 
   labs(
     x = "Day",
     y = "Total activity",
     caption = "Data from the Advanced Cardiac Care Center of Columbia University Medical Center"
   )
-  
-trends
 
 ```
 
@@ -198,28 +199,21 @@ Now we could see the trends of total activity for each day.
 ********
 
 Draw a single-panel plot that shows the 24-hour activity time courses for each day.
+
 ```{r}
 accel_data %>% 
-  group_by(day) %>% 
-  mutate(hour_in_a_day = ceiling(minute/60)) %>%
-  group_by(day, hour_in_a_day) %>% 
-  summarize(sum_by_hour = sum(activity)) %>% 
-  ggplot(aes(x = hour_in_a_day, y = sum_by_hour, color = day)) + 
-  geom_point(aes(group = day)) + 
-  geom_line(aes(group = day)) + 
-  scale_y_continuous(
-    breaks = c(100000,200000,300000,400000), 
-    labels = c("100000","200000","300000","400000")
-    ) + 
-  scale_x_continuous(
-    breaks = c(0,3,6,9,12,15,18,21,24), 
-    labels = c("0", "3", "6", "9", "12","15","18","21","24")
-    ) + 
+  mutate(
+    hour = ceiling(minute/60)
+  ) %>% 
+  group_by(day_id, hour) %>% 
+  mutate(mean_act = mean(activity)) %>% 
+  ggplot(aes(x = hour, y = mean_act, color = day, group = day_id)) +
+  geom_point()+
+  geom_line() +
   labs(
     x = "Hour of each day",
     y = "Activity",
-    caption = "Data from the Advanced Cardiac Care Center of Columbia University Medical Center"
-  )
+    caption = "Data from the Advanced Cardiac Care Center of Columbia University Medical Center" )
 ```
 
 We could see that this man's activity counts was high in 9pm on Friday and was inactive during 0am to 8am everyday.
@@ -232,13 +226,66 @@ data("ny_noaa")
 ```
 
 ```{r}
-weather_df=
-  ny_noaa%>% 
+weather_df= ny_noaa %>% 
+  janitor::clean_names() %>% 
   separate(date,into = c("year", "month", "day"), sep = "-") %>% 
   mutate(
     year = as.integer(year),
     month = as.integer(month),
-    month = month.abb[month]) %>% 
-select(-id)
-    
+    month = month.abb[month],
+    tmin = as.numeric(tmin),
+    tmax = as.numeric(tmax),
+    tmax = tmax / 10,
+    tmin = tmin / 10,
+    prcp = prcp / 10
+)
+
 ```
+
+```{r}
+snow = weather_df$snow 
+snow_mode= names(table(snow))[table(snow)==max(table(snow))]  
+```
+For snowfall, what are the most commonly observed values?
+
+********
+Make a two-panel plots showing the average max temperature in January and July in each station across years.
+
+```{r}
+weather_df %>%
+filter(month %in% c("Jan", "Jul")) %>%
+group_by(id, year, month) %>%
+summarize(avtmaxd = mean(tmax, na.rm = TRUE), .groups = 'drop') %>%
+ggplot(aes(x = year, y = avtmaxd, group = id)) +
+geom_line() +
+facet_grid(month ~.)+
+labs(title = "Mean Average Temperature for January and July Across Stations and Years", x = "Year", y = "Average Maximum Temperature (C)") +
+theme(axis.title = element_text(size = 8),
+      plot.title = element_text(size = 10))
+```
+
+********
+Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+
+```{r}
+
+tmax_min_p = weather_df %>%
+  drop_na(tmin,tmax)%>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()+
+  theme (legend.position = "right",
+    legend.title = element_text(size=10)
+  )
+
+snowfall_df = weather_df %>%
+  filter (0 < snow, snow < 100) %>%
+  group_by(year) %>%
+  select(year, snow) %>% 
+  mutate(year = as.character(year)) %>% 
+  ggplot(aes(x= year, y= snow)) +
+  geom_boxplot()+
+  theme(axis.text.x = element_text (angle = 90, vjust = 0.5, hjust = 1))
+tmax_min_p / snowfall_df 
+
+```
+
