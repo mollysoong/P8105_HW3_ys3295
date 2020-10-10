@@ -59,6 +59,8 @@ This dataset contains `r nrow(instacart)` rows and ... columns.
 
 Observations are the level of items in orders by user. There are user / order variables -- user ID, order ID, order day, and order hour. There are also item variables -- name, aisle, department, and some numeric codes. 
 
+********
+
 How many aisles, and which are most items from?
 
 ```{r}
@@ -66,8 +68,6 @@ instacart %>%
 	count(aisle) %>% 
 	arrange(desc(n))
 ```
-
-********
 
 Let's make a plot
 
@@ -84,8 +84,6 @@ instacart %>%
 	theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
-********
-
 Let's make a table!!
 
 ```{r}
@@ -99,7 +97,6 @@ instacart %>%
 	knitr::kable()
 ```
 
-********
 
 Apples vs ice cream..
 
@@ -114,7 +111,9 @@ instacart %>%
 	)
 ```
 ### Problem 2
- 
+
+
+Read and clean accelerometers dataset. 
 ```{r laod and tidy}
 accel_data = 
   read_csv(file = "./data/accel_data.csv") %>% 
@@ -169,7 +168,6 @@ knitr::kable(table_for_total, digits = 2)
 
 ```
 
-
 The trends are not apparent.
 
 **********
@@ -220,11 +218,13 @@ We could see that this man's activity counts was high in 9pm on Friday and was i
 
 ### Problem 3
 
+Load ny_noaa dataset.
 ```{r}
 library(p8105.datasets)
 data("ny_noaa")
 ```
 
+Clean and data and create separate variables for year, month, and day. 
 ```{r}
 weather_df= ny_noaa %>% 
   janitor::clean_names() %>% 
@@ -242,13 +242,16 @@ weather_df= ny_noaa %>%
 
 ```
 
+Next, check the most commonly observed values for snowball.
+
 ```{r}
 snow = weather_df$snow 
-snow_mode= names(table(snow))[table(snow)==max(table(snow))]  
+snow_mode= names(table(snow))[table(snow) == max(table(snow))]  
 ```
-For snowfall, what are the most commonly observed values?
+For snowfall, the most commonly observed values is `r snow_mode`.
 
 ********
+
 Make a two-panel plots showing the average max temperature in January and July in each station across years.
 
 ```{r}
@@ -257,14 +260,17 @@ filter(month %in% c("Jan", "Jul")) %>%
 group_by(id, year, month) %>%
 summarize(avtmaxd = mean(tmax, na.rm = TRUE), .groups = 'drop') %>%
 ggplot(aes(x = year, y = avtmaxd, group = id)) +
-geom_line() +
+geom_line()+
+geom_point()+
 facet_grid(month ~.)+
 labs(title = "Mean Average Temperature for January and July Across Stations and Years", x = "Year", y = "Average Maximum Temperature (C)") +
 theme(axis.title = element_text(size = 8),
       plot.title = element_text(size = 10))
 ```
+This plots shows an increasing trend in the average maximum temperature in January and July across the years, which could be an indicator of global warming. Also, there are several outliers in the January plot in 1982, 2005 that show much lower average maximum temperature to the other years while some outliers in 2004 has much higher average maximum temperature than the other years. In the plot of July, there are several outliers in the year of 1988, 2004 and 2007 show lower average maximum temperature to other years.
 
 ********
+
 Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
 
 ```{r}
