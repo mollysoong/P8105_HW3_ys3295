@@ -293,7 +293,7 @@ theme(axis.title = element_text(size = 8),
       plot.title = element_text(size = 10))
 ```
 
-The plot shows increasing trend in the average maximum temperature in January and in July across the years, which could be an indicator of global warming. Also, there are several outliers in the January plot in 1982, 2005 that show much lower average maximum temperature to the other years while some outliers in 2004 has much higher average maximum temperature than the other years. In the plot of July, there are several outliers in the year of 1988, 2004 and 2007 show lower average maximum temperature to other years.
+The plot shows increasing trends in the average maximum temperature in January and in July across the years, which could be an indicator of global warming. Also, there are several outliers in the January plot in 1982, 2005 that show much lower average maximum temperature to the other years while some outliers in 2004 has much higher average maximum temperature than the other years. In the plot of July, there are several outliers in the year of 1988, 2004 and 2007 show lower average maximum temperature to other years.
 
 ********
 
