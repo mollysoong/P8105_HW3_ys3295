@@ -238,8 +238,7 @@ weather_df= ny_noaa %>%
     tmax = as.numeric(tmax),
     tmax = tmax / 10,
     tmin = tmin / 10,
-    prcp = prcp / 10
-)
+    prcp = prcp / 10)
 
 ```
 NY NOAA data contains core variables for all New York state weather station form January 1, 1981 through December 31, 2010. There are `r nrow(weather_df)` rows and `r ncol(weather_df)` columns in this dataset while `r nrow(weather_df)` observations in total. 
