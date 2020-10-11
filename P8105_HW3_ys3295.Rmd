@@ -260,9 +260,9 @@ Description:
 
 * The average snowfall is `r round(mean(pull(weather_df, snow), na.rm = TRUE), digits = 2)` mm with the standard deviation of `r round(sd(pull(weather_df, snow), na.rm = TRUE), digits = 2)` mm. The maximum and minimum snowfall during the period is `r max(pull(weather_df, snow), na.rm = TRUE)` mm and `r min(pull(weather_df, snow), na.rm = TRUE)` mm respectively. 
  
-* The average maximum temperature is `r round(mean(pull(weather_df, tmax), na.rm = TRUE), digits = 2)` tenths of mm with the standard deviation of `r round(sd(pull(weather_df, tmax), na.rm = TRUE), digits = 2)` tenths of mm. The range of between maximum temperature during the period is between `r max(pull(weather_df, tmax), na.rm = TRUE)` tenths of mm and `r min(pull(weather_df, tmax), na.rm = TRUE)` tenths of mm. 
+* The average maximum temperature is `r round(mean(pull(weather_df, tmax), na.rm = TRUE), digits = 2)` tenths of degrees C with the standard deviation of `r round(sd(pull(weather_df, tmax), na.rm = TRUE), digits = 2)` tenths of degrees C. The range of between maximum temperature during the period is between `r max(pull(weather_df, tmax), na.rm = TRUE)` tenths of degrees C and `r min(pull(weather_df, tmax), na.rm = TRUE)` tenths of degrees C. 
 
-* The average minimum temperature is `r round(mean(pull(weather_df, tmin), na.rm = TRUE), digits = 2)` tenths of mm with the standard deviation of `r round(sd(pull(weather_df, tmin), na.rm = TRUE), digits = 2)` tenths of mm. The range of minimum temperature during the period is between  `r max(pull(weather_df, tmin), na.rm = TRUE)` tenths of mm and `r min(pull(weather_df, tmin), na.rm = TRUE)` tenths of mm. 
+* The average minimum temperature is `r round(mean(pull(weather_df, tmin), na.rm = TRUE), digits = 2)` tenths of degrees C with the standard deviation of `r round(sd(pull(weather_df, tmin), na.rm = TRUE), digits = 2)` tenths of degrees C. The range of minimum temperature during the period is between  `r max(pull(weather_df, tmin), na.rm = TRUE)` tenths of degrees C and `r min(pull(weather_df, tmin), na.rm = TRUE)` tenths of degrees C. 
 
 * There are `r sum(is.na(weather_df$tmin))` , `r sum(is.na(weather_df$tmax))` and `r sum(is.na(weather_df$snow))` missing values in the variables of minimum and maximum temperature, and snowfall respectively. 
 
