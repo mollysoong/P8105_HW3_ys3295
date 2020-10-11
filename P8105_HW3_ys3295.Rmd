@@ -242,7 +242,7 @@ weather_df= ny_noaa %>%
 )
 
 ```
-NY NOAA data contains five core variables for all New York state weather station form January 1, 1981 through December 31, 2010. There are `r nrow(weather_df)` rows and `r ncol(weather_df)` columns in this dataset while `r nrow(weather_df)` observations in total. 
+NY NOAA data contains core variables for all New York state weather station form January 1, 1981 through December 31, 2010. There are `r nrow(weather_df)` rows and `r ncol(weather_df)` columns in this dataset while `r nrow(weather_df)` observations in total. 
 
 The dataset contains variables:
 
@@ -253,18 +253,6 @@ The dataset contains variables:
 * snwd: Snow depth (mm)
 * tmax: Maximum temperature (tenths of degrees C)
 * tmin: Minimum temperature (tenths of degrees C)
-
-Description:
-
-* The average precipitation is `r round(mean(pull(weather_df, prcp), na.rm = TRUE), digits = 2)` tenths of mm with the standard deviation of `r round(sd(pull(weather_df, prcp), na.rm = TRUE), digits = 2)` tenths of mm. The maximum and minimum precipitation during the period is `r max(pull(weather_df,prcp), na.rm = TRUE)` tenths of mm and `r min(pull(weather_df,prcp), na.rm = TRUE)` tenths of mm respectively. 
-
-* The average snowfall is `r round(mean(pull(weather_df, snow), na.rm = TRUE), digits = 2)` mm with the standard deviation of `r round(sd(pull(weather_df, snow), na.rm = TRUE), digits = 2)` mm. The maximum and minimum snowfall during the period is `r max(pull(weather_df, snow), na.rm = TRUE)` mm and `r min(pull(weather_df, snow), na.rm = TRUE)` mm respectively. 
- 
-* The average maximum temperature is `r round(mean(pull(weather_df, tmax), na.rm = TRUE), digits = 2)` tenths of degrees C with the standard deviation of `r round(sd(pull(weather_df, tmax), na.rm = TRUE), digits = 2)` tenths of degrees C. The range of between maximum temperature during the period is between `r max(pull(weather_df, tmax), na.rm = TRUE)` tenths of degrees C and `r min(pull(weather_df, tmax), na.rm = TRUE)` tenths of degrees C. 
-
-* The average minimum temperature is `r round(mean(pull(weather_df, tmin), na.rm = TRUE), digits = 2)` tenths of degrees C with the standard deviation of `r round(sd(pull(weather_df, tmin), na.rm = TRUE), digits = 2)` tenths of degrees C. The range of minimum temperature during the period is between  `r max(pull(weather_df, tmin), na.rm = TRUE)` tenths of degrees C and `r min(pull(weather_df, tmin), na.rm = TRUE)` tenths of degrees C. 
-
-* There are `r sum(is.na(weather_df$tmin))` , `r sum(is.na(weather_df$tmax))` and `r sum(is.na(weather_df$snow))` missing values in the variables of minimum and maximum temperature, and snowfall respectively. 
 
 ********
 
@@ -326,4 +314,15 @@ tmax_min_p / snowfall_df
 
 ```
 
+Description:
+
+* The average precipitation is `r round(mean(pull(weather_df, prcp), na.rm = TRUE), digits = 2)` tenths of mm with the standard deviation of `r round(sd(pull(weather_df, prcp), na.rm = TRUE), digits = 2)` tenths of mm. The maximum and minimum precipitation during the period is `r max(pull(weather_df,prcp), na.rm = TRUE)` tenths of mm and `r min(pull(weather_df,prcp), na.rm = TRUE)` tenths of mm respectively. 
+
+* The average snowfall is `r round(mean(pull(weather_df, snow), na.rm = TRUE), digits = 2)` mm with the standard deviation of `r round(sd(pull(weather_df, snow), na.rm = TRUE), digits = 2)` mm. The maximum and minimum snowfall during the period is `r max(pull(weather_df, snow), na.rm = TRUE)` mm and `r min(pull(weather_df, snow), na.rm = TRUE)` mm respectively. 
+ 
+* The average maximum temperature is `r round(mean(pull(weather_df, tmax), na.rm = TRUE), digits = 2)` tenths of degrees C with the standard deviation of `r round(sd(pull(weather_df, tmax), na.rm = TRUE), digits = 2)` tenths of degrees C. The range of maximum temperature during the period is between `r max(pull(weather_df, tmax), na.rm = TRUE)` tenths of degrees C and `r min(pull(weather_df, tmax), na.rm = TRUE)` tenths of degrees C. 
+
+* The average minimum temperature is `r round(mean(pull(weather_df, tmin), na.rm = TRUE), digits = 2)` tenths of degrees C with the standard deviation of `r round(sd(pull(weather_df, tmin), na.rm = TRUE), digits = 2)` tenths of degrees C. The range of minimum temperature during the period is between  `r max(pull(weather_df, tmin), na.rm = TRUE)` tenths of degrees C and `r min(pull(weather_df, tmin), na.rm = TRUE)` tenths of degrees C. 
+
+* There are `r sum(is.na(weather_df$tmin))` , `r sum(is.na(weather_df$tmax))` and `r sum(is.na(weather_df$snow))` missing values in the variables of minimum and maximum temperature, and snowfall respectively. The large number of missing values in the above variables might cause potential issues when drawing plots (e.g. the warning message pop up when drawing average max temperature in January and July in each station across years). 
 
